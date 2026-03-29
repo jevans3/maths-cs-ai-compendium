@@ -13,12 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.12"
+          cache: "pip"
 
-      - run: pip install "mkdocs<2" "mkdocs-material[imaging]"
+      - name: Install dependencies
+        run: pip install "mkdocs>=1.6,<2" "mkdocs-material[imaging]>=9.5,<10"
 
       - name: Create docs directory with symlinks
         run: |
@@ -31,4 +35,5 @@ jobs:
             ln -s "../$dir" "docs/$dir"
           done
 
-      - run: mkdocs gh-deploy --force
+      - name: Deploy to GitHub Pages
+        run: mkdocs gh-deploy --force
